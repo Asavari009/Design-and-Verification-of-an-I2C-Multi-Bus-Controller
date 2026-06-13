@@ -8,7 +8,6 @@ A multi-phase SystemVerilog verification suite for the [OpenCores I2C Multiple B
 - [Overview](#overview)
 - [Verification Architecture](#verification-architecture)
 - [Verification Flow](#verification-flow)
-- [Repository Structure](#repository-structure)
 - [Prerequisites](#prerequisites)
 - [Getting Started](#getting-started)
 
@@ -65,20 +64,6 @@ The testbench validates four core scenarios across all phases:
 | **Scoreboard Cross-Checking** | Automatically flags structural discrepancies or illegal bus states across both interfaces |
 
 ---
-
-## Repository Structure
-
-```
-.
-├── proj_1/          # Phase 1: Basic interface & hardware tasks
-├── proj_2/          # Phase 2: Layered testbench architecture
-├── proj_3/          # Phase 3: Test plan & functional coverage
-├── proj_4/          # Phase 4: Constraint-driven random testing & regression
-│   └── sim/
-│       └── Makefile
-├── regress.sh       # Automated regression script
-└── README.md
-```
 
 ---
 

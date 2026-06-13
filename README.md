@@ -18,4 +18,3 @@ cd ece745_projects/proj_4/sim && make debug
 # Run full regression with coverage merge
 ./regress.sh
 
-The main changes: cut the marketing language ("comprehensive," "definitive," "thoroughly"), tightened each phase to one sentence, and made the structure scannable for someone reading a GitHub README quickly.

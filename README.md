@@ -1,20 +1,104 @@
-I2C Multi-Bus Controller (I2CMB) — Layered Verification Testbench
+# I2C Multi-Bus Controller (I2CMB) — Layered Verification Testbench
 
-A multi-phase SystemVerilog verification suite for the OpenCores I2CMB IP Core, evolving from a flat testbench to a complete layered environment with constraint-driven random testing, functional coverage tracking, and regression closure.
-Verification Architecture
+A multi-phase SystemVerilog verification suite for the [OpenCores I2C Multiple Bus Controller (I2CMB)](https://opencores.org/projects/i2cmb) IP Core, evolving from a flat testbench to a complete layered environment with constraint-driven random testing, functional coverage tracking, and regression closure.
+
+---
+
+## Table of Contents
+- [Overview](#overview)
+- [Verification Architecture](#verification-architecture)
+- [Verification Flow](#verification-flow)
+- [Repository Structure](#repository-structure)
+- [Prerequisites](#prerequisites)
+- [Getting Started](#getting-started)
+
+---
+
+## Overview
+
+This repository consolidates a step-by-step evolutionary migration from a basic flat testbench interface up to a complete SystemVerilog layered verification environment. The final environment supports:
+
+- Constraint-driven random testing
+- Functional coverage tracking with SystemVerilog covergroups
+- Automated regression with coverage merging
+- Self-checking scoreboard with predictor validation
+
+---
+
+## Verification Architecture
+
 Built across four progressive phases:
 
-Phase 1 — Interface & Tasks: Established Wishbone (wb_if) and I2C (i2c_if) interface connections to the DUT; implemented core driver tasks including wait_for_i2c_transfer and provide_read_data handlers.
-Phase 2 — Layered Environment: Migrated to a modular architecture using ncsu_pkg; built a test wrapper, environment config, generator, independent WB/I2C monitors, predictor, and scoreboard.
-Phase 3 — Test Plan & Coverage: Defined 20+ verification targets covering register-level access and multi-bus state hazards; implemented SystemVerilog covergroups, coverpoints, and cross coverage mapped to a Questa UCDB test plan.
-Phase 4 — Random Testing & Regression: Added constraint-driven random transactions and directed edge-case scenarios; automated concurrent simulation runs via regress.sh with per-run coverage merge into a cumulative summary.
+### Phase 1 — Interface & Hardware Tasks
+- Established **Wishbone (`wb_if`)** and **I2C (`i2c_if`)** interface connections to the DUT
+- Implemented core driver tasks: `wait_for_i2c_transfer` (write/read cycles) and `provide_read_data` handlers
 
-Verification Flow
-The testbench validates four core scenarios: sequential multi-byte write streams, bidirectional read handshakes, interleaved read/write stress testing for deadlock detection, and automatic scoreboard cross-checking across both interfaces.
-Prerequisites: Linux cluster, Siemens Questa/ModelSim, Bash
-bash# Run a single phase simulation
-cd ece745_projects/proj_4/sim && make debug
+### Phase 2 — Layered Testbench Environment
+- Migrated to a fully modular architecture using the `ncsu_pkg` foundation class library
+- Built the following independent components:
+  - `i2cmb_test` — top-level test wrapper
+  - `i2cmb_generator` — stimulus generator arrays
+  - `wb_monitor` / `i2c_monitor` — independent protocol monitors
+  - `i2cmb_predictor` — active prediction module
+  - `i2cmb_scoreboard` — automated transaction comparator
 
-# Run full regression with coverage merge
+### Phase 3 — Test Plan & Functional Coverage
+- Defined **20+ verification targets** covering register-level access (CSR, DPR, CMDR) and multi-bus state hazards
+- Implemented SystemVerilog **covergroups**, parameterized **coverpoints**, and **cross coverage** criteria
+- Mapped runtime metrics to a structural XML test plan within the **Siemens Questa UCDB** database
+
+### Phase 4 — Constraint-Driven Random Testing & Regression
+- Developed specialized random transaction constraints and directed edge-case scenarios
+- Configured `regress.sh` to trigger concurrent randomized simulations, capture isolated coverage databases, and merge them into a cumulative coverage summary
+
+---
+
+## Verification Flow
+
+The testbench validates four core scenarios across all phases:
+
+| Scenario | Description |
+|---|---|
+| **Sequential Write Streams** | Verifies multi-byte write transfers from Wishbone down to physical I2C lines |
+| **Bidirectional Read Handshakes** | Exercises dynamic bus response with internal monitor pipeline validation |
+| **Interleaved Stress Testing** | Floods bus arbiters with read/write boundaries to detect deadlocks or state discrepancies |
+| **Scoreboard Cross-Checking** | Automatically flags structural discrepancies or illegal bus states across both interfaces |
+
+---
+
+## Repository Structure
+
+```
+.
+├── proj_1/          # Phase 1: Basic interface & hardware tasks
+├── proj_2/          # Phase 2: Layered testbench architecture
+├── proj_3/          # Phase 3: Test plan & functional coverage
+├── proj_4/          # Phase 4: Constraint-driven random testing & regression
+│   └── sim/
+│       └── Makefile
+├── regress.sh       # Automated regression script
+└── README.md
+```
+
+---
+
+## Prerequisites
+
+- Linux / Unix compute cluster environment
+- **Siemens Questa Sim** / ModelSim simulation environment
+- Standard shell utilities (`bash`, `tar`, `make`)
+
+---
+
+## Getting Started
+
+**Run a single phase simulation:**
+```bash
+cd ece745_projects/proj_4/sim
+make debug
+```
+
+**Run full regression with coverage merge:**
+```bash
 ./regress.sh
-
+```
